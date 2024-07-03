@@ -79,9 +79,9 @@ const Form = () => {
   };
 
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch("https://social.ketan.cloud/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const loggedInResponse = await fetch('https://socialbackend.ketan.cloud/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(values),
     });
     const loggedIn = await loggedInResponse.json();
