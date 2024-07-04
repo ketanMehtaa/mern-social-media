@@ -41,21 +41,37 @@ const MyPostWidget = ({ picturePath }) => {
     const formData = new FormData();
     formData.append("userId", _id);
     formData.append("description", post);
+  
     if (image) {
-      formData.append("picture", image);
-      formData.append("picturePath", image.name);
+      await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(image);
+        reader.onloadend = () => {
+          formData.append("picturePath", reader.result);
+          resolve(); // Resolve the promise once onloadend completes
+        };
+        reader.onerror = reject; // Handle any error during reading
+      });
     }
-
+  
     const response = await fetch(`${process.env.REACT_APP_BACKENDURL}/posts`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
+  
+    if (!response.ok) {
+      // Handle HTTP errors
+      console.error('Error posting data:', response.statusText);
+      return;
+    }
+  
     const posts = await response.json();
     dispatch(setPosts({ posts }));
     setImage(null);
     setPost("");
   };
+  
 
   return (
     <WidgetWrapper>
@@ -83,7 +99,7 @@ const MyPostWidget = ({ picturePath }) => {
           <Dropzone
             acceptedFiles=".jpg,.jpeg,.png"
             multiple={false}
-            onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
+            onDrop={(acceptedFiles) => setImage(acceptedFiles[0] )}
           >
             {({ getRootProps, getInputProps }) => (
               <FlexBetween>
