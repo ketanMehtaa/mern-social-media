@@ -22,7 +22,7 @@ const UserWidget = ({ userId, picturePath }) => {
   const main = palette.neutral.main;
 
   const getUser = async () => {
-    const response = await fetch(`https://socialbackend.ketan.cloud/users/${userId}`, {
+    const response = await fetch(`${process.env.REACT_APP_BACKENDURL}/users/${userId}`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
     });
